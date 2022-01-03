@@ -1,0 +1,22 @@
+{
+  "name": "yiiman/yii-module-user",
+  "description": "Yii user module with powerFull functions and profile",
+  "autoload": {
+    "psr-4": {
+      "Yiiman\\ModuleUser\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "YiiMan",
+      "email": "info@yiiman.ir"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.0",
+    "yiisoft/yii2": "2.0.*",
+    "ext-json": "*",
+    "ext-fileinfo": "*"
+  }
+}
