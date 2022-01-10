@@ -95,7 +95,7 @@ $avatar_path = Yii::$app->urlManager->createAbsoluteUrl(['../upload/users/avatar
                             </div>
                             <div class="col-md-6">
                                 <?= $form->field($model, 'birthday')->widget(
-                                    \system\widgets\materialTimePicker\TimePickerWidget::className()
+                                    \YiiMan\YiiBasics\widgets\materialTimePicker\TimePickerWidget::className()
                                 ) ?>
                             </div>
                             <div class="col-md-6">
