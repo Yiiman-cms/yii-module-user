@@ -3,6 +3,7 @@ namespace Yiiman\ModuleUser\module\models;
 use Yiiman\ModuleUser\module\models\User;
 use Yii;
 use yii\base\Model;
+use common\models\Users;
 class ChangePassword extends Model {
     public $user;
     public $old_password;

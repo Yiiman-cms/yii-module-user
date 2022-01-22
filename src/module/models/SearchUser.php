@@ -40,51 +40,51 @@ class SearchUser extends User
      * @return ActiveDataProvider
      */
     public function search($params)
-{
-    $query = User::find();
+    {
+        $query = User::find();
 
-    // add conditions that should always apply here
+        // add conditions that should always apply here
 
-    $dataProvider = new ActiveDataProvider([
-        'query' => $query,
-    ]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
 
-    $this->load($params);
+        $this->load($params);
 
-    if (!$this->validate()) {
-        // uncomment the following line if you do not want to return any records when validation fails
-        // $query->where('0=1');
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'status' => $this->status,
+            'birthday' => $this->birthday,
+            'updated_by' => $this->updated_by,
+            'credit' => $this->credit,
+        ]);
+        $username = str_replace([' ', '_', '-', '(', ')',], '', $this->username);
+        $query->andFilterWhere(['like','username', $username])
+            ->andFilterWhere(['like', 'mobile', $this->mobile])
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
+            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+            ->andFilterWhere(['like', 'fullname', $this->fullname])
+            ->andFilterWhere(['like', 'verification', $this->verification])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'family', $this->family])
+            ->andFilterWhere(['like', 'created_by', $this->created_by])
+            ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
+            ->andFilterWhere(['like', 'restored_by', $this->restored_by])
+            ->andFilterWhere(['like', 'nation_code', $this->nation_code])
+            ->andFilterWhere(['like', 'bank_card', $this->bank_card]);
+
         return $dataProvider;
     }
-
-    // grid filtering conditions
-    $query->andFilterWhere([
-        'id' => $this->id,
-        'created_at' => $this->created_at,
-        'updated_at' => $this->updated_at,
-        'status' => $this->status,
-        'birthday' => $this->birthday,
-        'updated_by' => $this->updated_by,
-        'credit' => $this->credit,
-    ]);
-
-    $query->andFilterWhere(['like', 'username', $this->username])
-        ->andFilterWhere(['like', 'mobile', $this->mobile])
-        ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-        ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-        ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-        ->andFilterWhere(['like', 'fullname', $this->fullname])
-        ->andFilterWhere(['like', 'verification', $this->verification])
-        ->andFilterWhere(['like', 'name', $this->name])
-        ->andFilterWhere(['like', 'family', $this->family])
-        ->andFilterWhere(['like', 'created_by', $this->created_by])
-        ->andFilterWhere(['like', 'deleted_by', $this->deleted_by])
-        ->andFilterWhere(['like', 'restored_by', $this->restored_by])
-        ->andFilterWhere(['like', 'nation_code', $this->nation_code])
-        ->andFilterWhere(['like', 'bank_card', $this->bank_card]);
-
-    return $dataProvider;
-}
 
     public function searchJobStatus($params)
     {

@@ -1,37 +1,57 @@
 <?php
 
 namespace Yiiman\ModuleUser\module\models;
+
 use Yii;
 use yii\base\Model;
 use yii\base\InvalidParamException;
-class ResetPasswordForm extends Model {
-    public $password;
+
+class ResetPasswordForm extends Model
+{
+    public $username;
+    /**
+     * @var User
+     */
     private $_user = null;
-    public function __construct($token, $config = []) {
-        if (empty($token) || !is_string($token)) {
-            throw new InvalidParamException(Yii::t('base', 'Password reset token cannot be blank.'));
-        }
-        $this->_user = Users::findByPasswordResetToken($token);
-        if (!$this->_user) {
-            throw new InvalidParamException(Yii::t('base', 'Wrong password reset token.'));
-        }
-        parent::__construct($config);
-    }
-    public function rules() {
+
+    public function rules()
+    {
         return [
-                ['password', 'required'],
-                ['password', 'string', 'min' => 6, 'max' => 255],
+            ['username', 'required'],
+            ['username', 'validateUsername']
         ];
     }
-    public function attributeLabels() {
+
+    public function attributeLabels()
+    {
         return [
-            'password' => Yii::t('base', 'Password'),
+            'username' => Yii::t('base', 'شماره همراه'),
         ];
     }
-    public function resetPassword() {
-        $user = $this->_user;
-        $user->setPassword($this->password);
-        $user->removePasswordResetToken();
-        return $user->save(false);
+
+    public function validateUsername()
+    {
+        $this->_user = User::findOne(['username' => $this->username, 'status' => User::STATUS_ACTIVE]);
+        if (empty($this->_user)) {
+            $this->addError('username', 'این نام کاربر وجود ندارد، یا غیر فعال است');
+            return false;
+        }
+    }
+
+    /**
+     * @return User|null
+     */
+    public function sendCode()
+    {
+        $status=$this->_user->sendVerifyCode(true);
+        switch ($status){
+            case 'error':
+            case 'errors':
+                return false;
+                break;
+        }
+        $this->_user->password_reset_token='reseting';
+        $this->_user->save();
+        return $this->_user;
     }
 }

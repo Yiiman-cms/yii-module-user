@@ -5,21 +5,26 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model Yiiman\ModuleUser\module\models\User */
 
-$this->title = Yii::t('user', 'ویرایش مدیریت کاربران سایت: ' . $model->name, [
-    'nameAttribute' => '' . $model->name,
+$this->title = Yii::t('user', 'ویرایش اطلاعات کاربر: ' . $model->fullname, [
+    'nameAttribute' => '' . $model->fullname,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('user', 'کاربران سایتs'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('user', 'کاربران سایت'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('user', 'ویرایش');
+
+\system\widgets\topMenu\TopMenuWidget::addBtb(
+    'assignment',
+    Yii::t('factor', 'بازبینی کاربر'),
+    'info' ,
+    null ,
+    Yii::$app->Options->BackendUrl . '/user/default/view?id='.$model->id
+);
 ?>
 <div class="user-update">
 
-    <h2><?= Html::encode($this->title) ?></h2>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'jobs' => $jobs,
-
     ]) ?>
 
 </div>

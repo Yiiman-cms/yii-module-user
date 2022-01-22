@@ -1,6 +1,7 @@
 <?php
 namespace Yiiman\ModuleUser\module\models;
 
+use system\modules\sms\base\Sms;
 use Yiiman\ModuleUser\module\models\User;
 use Yii;
 use yii\base\Model;
@@ -18,9 +19,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password', 'name', 'family'], 'required'],
+            [['username', 'password'], 'required'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
+
 
         ];
     }
@@ -36,12 +38,14 @@ class LoginForm extends Model
         ];
     }
 
+
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
+
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, Yii::t('base', 'Incorrect username or password.'));
+                $this->addError($attribute, Yii::t('base', 'شماره همراه یا رمز عبور اشتباه است'));
             }
         }
     }
@@ -52,6 +56,7 @@ class LoginForm extends Model
         if ($this->validate()) {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         } else {
+            $this->addError('username','نام کاربری یا رمز عبور اشتباه است');
             return false;
         }
     }
@@ -59,8 +64,9 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findOne(['username'=>$this->username,'status'=>User::STATUS_ACTIVE]);
         }
+
         return $this->_user;
     }
 
@@ -84,7 +90,7 @@ class LoginForm extends Model
             $user->save();
 
 
-            Yii::$app->sms->VerifyLookup($mobile, $randNum, '', '', 'login');
+            Sms::sendPattern('verifycode',$mobile, $user->name,$randNum);
             return true;
         }
     }
